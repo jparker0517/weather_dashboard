@@ -17,6 +17,10 @@
     .muted { color: var(--muted); font-size:.9rem; }
     canvas { background:white; border:1px solid var(--border); border-radius:.75rem; padding:.5rem; }
     footer { margin-top:2rem; color:#777; font-size:.9rem; }
+    #dailyChart {
+      max-width: 100%;
+      height: auto;
+      }
   </style>
 </head>
 <body>
@@ -49,7 +53,7 @@
   </section>
 
   <h3>7-Day Forecast</h3>
-  <canvas id="dailyChart" width="900" height="300"></canvas>
+  <canvas id="dailyChart"></canvas>
 
   <footer>
     <p class="muted">Data from <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open‑Meteo</a>. No API key required.</p>
