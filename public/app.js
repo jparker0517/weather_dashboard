@@ -24,7 +24,17 @@ async function geocode(name) {
 }
 
 async function forecast(lat, lon) {
-  const r = await fetch(`/api/forecast?lat=${lat}&lon=${lon}`);
+  const url = new URL('https://api.open-meteo.com/v1/forecast');
+  url.search = new URLSearchParams({
+    latitude: lat,
+    longitude: lon,
+    current_weather: 'true',
+    hourly: 'temperature_2m',
+    daily: 'temperature_2m_max,temperature_2m_min',
+    timezone: 'auto',         // <-- ensures times & current_weather match the location
+    timeformat: 'iso8601'
+  });
+  const r = await fetch(url.toString());
   if (!r.ok) throw new Error('forecast failed');
   return await r.json();
 }
