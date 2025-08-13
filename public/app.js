@@ -244,6 +244,3 @@ els.unit.addEventListener('change', () => {
 
 // Default: load Austin to show something
 loadByCity('Austin');
-
-setLoading(true, 'Testing loading bar…');
-setTimeout(() => setLoading(false), 1000);
