@@ -5,7 +5,7 @@ Built with **Node.js + Express** (proxy) and **Chart.js** on the frontend.
 
 ![Node CI](https://github.com/jparker0517/weather_dashboard/actions/workflows/node-ci.yml/badge.svg?branch=main)
 
-**Live demo:** _add your Render link here after deploy_
+**Live demo:** (https://weather-dashboard-g9ay.onrender.com)
 
 ---
 
