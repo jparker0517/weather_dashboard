@@ -9,18 +9,31 @@ const els = {
   today: document.getElementById('today'),
   dailyChart: document.getElementById('dailyChart')
 };
+
+let loadingStartedAt = 0;
+const MIN_LOADING_MS = 600; // adjust to taste (400–800ms feels good)
+
 function setLoading(isLoading, msg = 'Loading forecast…') {
   const el = document.getElementById('loading');
   if (!el) return;
-  el.textContent = msg;
-  el.hidden = !isLoading;
 
-  // Briefly disable inputs so users don’t spam clicks while loading
+  if (isLoading) {
+    loadingStartedAt = performance.now();
+    el.textContent = msg;
+    el.hidden = false;
+  } else {
+    const elapsed = performance.now() - loadingStartedAt;
+    const wait = Math.max(0, MIN_LOADING_MS - elapsed);
+    setTimeout(() => { el.hidden = true; }, wait);
+  }
+
+  // Disable/enable controls to prevent spam clicks during load
   els.searchBtn.disabled = isLoading;
   els.locBtn.disabled = isLoading;
   els.unit.disabled = isLoading;
   els.city.disabled = isLoading;
 }
+
 
 function showError(message) {
   const el = document.getElementById('error');
@@ -231,3 +244,6 @@ els.unit.addEventListener('change', () => {
 
 // Default: load Austin to show something
 loadByCity('Austin');
+
+setLoading(true, 'Testing loading bar…');
+setTimeout(() => setLoading(false), 1000);
