@@ -69,12 +69,15 @@ function drawChart(weather, unit) {
       responsive: true,
       maintainAspectRatio: false,
       animation: false,
+      resizeDelay: 150,
+      plugins: {
+        legend: { position: 'bottom' },
+        tooltip: { intersect: false, mode: 'index' }
+      },
+      interaction: { intersect: false, mode: 'index' },
       scales: {
-        y: {
-          ticks: {
-            callback: (v) => `${Math.round(v)}°`
-          }
-        }
+        y: { ticks: { callback: v => `${Math.round(v)}°` }, grace: '5%' },
+        x: { ticks: { maxRotation: 0, autoSkip: true } }
       }
     }
   });
