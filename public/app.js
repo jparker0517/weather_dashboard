@@ -42,9 +42,32 @@ function updateCards(place, weather, unit) {
   els.today.textContent = `High ${fmtTemp(tMax, unit)} • Low ${fmtTemp(tMin, unit)}`;
 
   // If hourly exists, show latest hour
-  if (weather.hourly && weather.hourly.temperature_2m && weather.hourly.temperature_2m.length) {
-    const last = weather.hourly.temperature_2m[weather.hourly.temperature_2m.length - 1];
-    els.current.textContent = `Now ${fmtTemp(last, unit)}`;
+  if (weather.current_weather && typeof weather.current_weather.temperature === 'number') {
+    const c = unit === 'imperial' ? toF(weather.current_weather.temperature) : weather.current_weather.temperature;
+    els.current.textContent = `Now ${Math.round(c)}°${unit === 'imperial' ? 'F' : 'C'}`;
+    return;
+    } 
+    else {
+      els.current.textContent = '—';
+  }
+  if (weather.hourly && Array.isArray(weather.hourly.time) && Array.isArray(weather.hourly.temperature_2m) && weather.hourly.time.length) {
+    const times = weather.hourly.time;
+    const temps = weather.hourly.temperature_2m;
+
+    const nowMs = Date.now();
+    let bestIdx = 0;
+    let bestDiff = Infinity;
+    for (let i = 0; i < times.length; i++) {
+      const tMs = new Date(times[i]).getTime();
+      const diff = Math.abs(tMs - nowMs);
+      if (diff < bestDiff) { bestDiff = diff; bestIdx = i; }
+    }
+
+    const tempC = temps[bestIdx];
+    els.current.textContent =
+      (typeof tempC === 'number')
+        ? `Now ${fmtTemp(tempC, unit)}`
+        : '—';
   } else {
     els.current.textContent = '—';
   }
