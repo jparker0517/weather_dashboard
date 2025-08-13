@@ -56,10 +56,6 @@
 </head>
 <body>
   <header>
-    <div id="statusBar" aria-live="polite">
-      <div id="loading" hidden>Loading forecast…</div>
-      <div id="error" hidden role="alert"></div>
-    </div>
     <h1>Weather Dashboard</h1>
     <div class="search">
       <input id="city" placeholder="Search city (e.g., Austin)" />
@@ -71,6 +67,12 @@
       </select>
     </div>
   </header>
+
+  <!-- Status UI (moved below header so it’s always full-width and visible) -->
+  <div id="statusBar" aria-live="polite">
+    <div id="loading" hidden>Loading forecast…</div>
+    <div id="error" hidden role="alert"></div>
+  </div>
 
   <section class="cards">
     <div class="card">
