@@ -36,7 +36,6 @@ function updateCards(place, weather, unit) {
   els.location.textContent = `${city}${admin}${country}`;
 
   // derive current temp from hourly closest to now
-  const nowIndex = 0;
   const tMax = weather.daily.temperature_2m_max[0];
   const tMin = weather.daily.temperature_2m_min[0];
   els.today.textContent = `High ${fmtTemp(tMax, unit)} • Low ${fmtTemp(tMin, unit)}`;
