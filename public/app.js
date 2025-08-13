@@ -9,6 +9,32 @@ const els = {
   today: document.getElementById('today'),
   dailyChart: document.getElementById('dailyChart')
 };
+function setLoading(isLoading, msg = 'Loading forecast…') {
+  const el = document.getElementById('loading');
+  if (!el) return;
+  el.textContent = msg;
+  el.hidden = !isLoading;
+
+  // Briefly disable inputs so users don’t spam clicks while loading
+  els.searchBtn.disabled = isLoading;
+  els.locBtn.disabled = isLoading;
+  els.unit.disabled = isLoading;
+  els.city.disabled = isLoading;
+}
+
+function showError(message) {
+  const el = document.getElementById('error');
+  if (!el) return;
+  el.textContent = message;
+  el.hidden = false;
+}
+
+function clearError() {
+  const el = document.getElementById('error');
+  if (!el) return;
+  el.hidden = true;
+  el.textContent = '';
+}
 
 let chart;
 
@@ -116,6 +142,8 @@ function drawChart(weather, unit) {
 }
 
 async function loadByCity(name) {
+  clearError();
+  setLoading(true, `Loading forecast for “${name}”…`);
   try {
     els.location.textContent = 'Searching…';
     const place = await geocode(name);
@@ -124,14 +152,25 @@ async function loadByCity(name) {
     drawChart(data, els.unit.value);
   } catch (e) {
     console.error(e);
-    els.location.textContent = 'City not found.';
+    // Friendly messages
+    const msg = /no results/i.test(String(e))
+      ? `Couldn’t find “${name}”. Try a different city or include the state/country.`
+      : `Couldn’t retrieve weather data. Please try again.`;
+    showError(msg);
+
+    els.location.textContent = '—';
     els.current.textContent = '—';
     els.today.textContent = '—';
     if (chart) chart.destroy();
+  } finally {
+    setLoading(false);
   }
 }
 
+
 async function loadByCoords(lat, lon) {
+  clearError();
+  setLoading(true, 'Loading forecast for your location…');
   try {
     els.location.textContent = 'Loading…';
     const place = { name: `Lat ${lat.toFixed(2)}, Lon ${lon.toFixed(2)}` };
@@ -140,12 +179,16 @@ async function loadByCoords(lat, lon) {
     drawChart(data, els.unit.value);
   } catch (e) {
     console.error(e);
-    els.location.textContent = 'Location failed.';
+    showError('Could not get weather for your location. Please try again.');
+    els.location.textContent = '—';
     els.current.textContent = '—';
     els.today.textContent = '—';
     if (chart) chart.destroy();
+  } finally {
+    setLoading(false);
   }
 }
+
 
 // Event listeners
 els.searchBtn.addEventListener('click', () => {
@@ -159,12 +202,22 @@ els.city.addEventListener('keydown', (e) => {
   }
 });
 els.locBtn.addEventListener('click', () => {
-  if (!navigator.geolocation) return alert('Geolocation not supported');
+  clearError();
+  if (!navigator.geolocation) {
+    showError('Geolocation is not supported in this browser.');
+    return;
+  }
   navigator.geolocation.getCurrentPosition(
     (pos) => loadByCoords(pos.coords.latitude, pos.coords.longitude),
-    () => alert('Could not get your location')
+    (err) => {
+      const m = err && err.code === err.PERMISSION_DENIED
+        ? 'Location permission denied. You can still search by city.'
+        : 'Could not get your location. Please try again.';
+      showError(m);
+    }
   );
 });
+
 els.unit.addEventListener('change', () => {
   // re-trigger last search if chart exists
   const name = els.location.textContent;

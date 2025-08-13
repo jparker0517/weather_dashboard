@@ -34,10 +34,32 @@
     }
 
     footer { margin-top:2rem; color:#777; font-size:.9rem; }
+
+    #statusBar { max-width: 900px; margin: 0 auto 1rem; }
+    #loading {
+      background: #fffbe6;
+      border: 1px solid #f5e08a;
+      color: #7a5900;
+      padding: .6rem .8rem;
+      border-radius: .5rem;
+      font-size: .95rem;
+    }
+    #error {
+      background: #ffecec;
+      border: 1px solid #ffb3b3;
+      color: #7a0b0b;
+      padding: .6rem .8rem;
+      border-radius: .5rem;
+      font-size: .95rem;
+    }
   </style>
 </head>
 <body>
   <header>
+    <div id="statusBar" aria-live="polite">
+      <div id="loading" hidden>Loading forecast…</div>
+      <div id="error" hidden role="alert"></div>
+    </div>
     <h1>Weather Dashboard</h1>
     <div class="search">
       <input id="city" placeholder="Search city (e.g., Austin)" />
