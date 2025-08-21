@@ -62,8 +62,6 @@ Create a Web Service from this repo:
 - Start Command: `npm start`
 - No env vars needed.
 
-After it’s live, paste your URL at the top of this README.
-
 ---
 
 ## 📝 Roadmap (nice next steps)
